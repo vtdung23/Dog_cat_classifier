@@ -1,6 +1,6 @@
 ---
 title: Dog Cat Classifier
-emoji: �
+emoji: 🐶
 colorFrom: purple
 colorTo: pink
 sdk: streamlit
