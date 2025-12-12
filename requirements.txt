@@ -1,3 +1,9 @@
-altair
-pandas
 streamlit
+torch
+torchvision
+timm
+huggingface_hub
+grad-cam
+Pillow
+numpy
+matplotlib

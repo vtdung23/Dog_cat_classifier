@@ -1,19 +1,28 @@
 ---
 title: Dog Cat Classifier
-emoji: 🚀
-colorFrom: red
-colorTo: red
-sdk: docker
-app_port: 8501
-tags:
-- streamlit
+emoji: �
+colorFrom: purple
+colorTo: pink
+sdk: streamlit
+sdk_version: 1.41.0
+app_file: app.py
 pinned: false
-short_description: Streamlit template space
+license: mit
 ---
 
-# Welcome to Streamlit!
+# 🐱🐶 Dog vs Cat Classifier
 
-Edit `/src/streamlit_app.py` to customize this app to your heart's desire. :heart:
+Ứng dụng phân loại Chó/Mèo sử dụng **ConvMixer** - một kiến trúc CNN hiện đại.
 
-If you have any questions, checkout our [documentation](https://docs.streamlit.io) and [community
-forums](https://discuss.streamlit.io).
+## ✨ Tính năng
+- Upload ảnh và nhận kết quả phân loại ngay lập tức
+- Hiển thị GradCAM để giải thích vùng model tập trung
+- Giao diện Streamlit thân thiện
+
+## 🏗️ Model
+- **Architecture:** ConvMixer-768/32
+- **Paper:** "Patches Are All You Need?"
+- **Dataset:** Dogs vs Cats
+
+## 🚀 Sử dụng
+Upload một ảnh chó hoặc mèo để xem kết quả phân loại!
