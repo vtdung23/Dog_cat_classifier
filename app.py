@@ -198,7 +198,7 @@ def render_demo_tab():
             with st.spinner("Đang tạo Grad-CAM..."):
                 try:
                     gradcam_img = generate_gradcam(model, image, device)
-                    st.image(gradcam_img, use_container_width=True)
+                    st.image(gradcam_img, width=112)  # 224/4 = 56, nhưng 112 để dễ nhìn hơn (1/4 diện tích = 1/2 width)
                     st.caption("Vùng màu đỏ/vàng = nơi model tập trung để đưa ra quyết định")
                 except Exception as e:
                     st.warning(f"Không thể tạo Grad-CAM: {str(e)}")
