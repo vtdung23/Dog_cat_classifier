@@ -10,6 +10,7 @@ import streamlit as st
 import torch
 import numpy as np
 import json
+import io
 from PIL import Image
 import matplotlib.pyplot as plt
 from pytorch_grad_cam import GradCAM
@@ -267,13 +268,13 @@ def render_report_tab():
     
     # Load results
     try:
-        with open("results.json", "r") as f:
+        with open("result.json", "r") as f:
             results = json.load(f)
     except FileNotFoundError:
-        st.error("❌ Không tìm thấy file `results.json`!")
+        st.error("❌ Không tìm thấy file `result.json`!")
         return
     except json.JSONDecodeError:
-        st.error("❌ File `results.json` không đúng định dạng!")
+        st.error("❌ File `result.json` không đúng định dạng!")
         return
     
     # Lấy data
@@ -395,6 +396,39 @@ def render_report_tab():
     
     plt.tight_layout()
     st.pyplot(fig)
+    
+    # Download buttons for the main chart
+    col_dl1, col_dl2, _ = st.columns([1, 1, 4])
+    
+    # Save to PDF
+    pdf_buffer = io.BytesIO()
+    fig.savefig(pdf_buffer, format='pdf', bbox_inches='tight', dpi=300)
+    pdf_buffer.seek(0)
+    
+    # Save to SVG
+    svg_buffer = io.BytesIO()
+    fig.savefig(svg_buffer, format='svg', bbox_inches='tight')
+    svg_buffer.seek(0)
+    
+    with col_dl1:
+        st.download_button(
+            label="📥 Tải PDF",
+            data=pdf_buffer,
+            file_name="training_history_comparison.pdf",
+            mime="application/pdf",
+            key="download_main_chart_pdf"
+        )
+    
+    with col_dl2:
+        st.download_button(
+            label="📥 Tải SVG",
+            data=svg_buffer,
+            file_name="training_history_comparison.svg",
+            mime="image/svg+xml",
+            key="download_main_chart_svg"
+        )
+    
+    plt.close(fig)
     
     st.markdown("---")
     
