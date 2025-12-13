@@ -14,6 +14,7 @@ from PIL import Image
 import matplotlib.pyplot as plt
 from pytorch_grad_cam import GradCAM
 from pytorch_grad_cam.utils.image import show_cam_on_image
+from pytorch_grad_cam.utils.model_targets import BinaryClassifierOutputTarget
 
 # Import từ model_utils
 from model_utils import (
@@ -123,8 +124,19 @@ def generate_gradcam(model, image: Image.Image, device: str):
     input_tensor = preprocess_image(image, transform)
     input_tensor = input_tensor.to(device)
     
-    # Tạo grayscale cam
-    grayscale_cam = cam(input_tensor=input_tensor, targets=None)
+    # Dự đoán trước để biết class nào được predict
+    with torch.no_grad():
+        output = model(input_tensor)
+        prob = torch.sigmoid(output).item()
+    
+    # Binary classification: output > 0.5 -> Dog (category=1), else Cat (category=0)
+    # BinaryClassifierOutputTarget sẽ đảo dấu gradient nếu category=0 (Cat)
+    # Điều này đảm bảo Grad-CAM highlight đúng vùng cho cả Dog và Cat
+    predicted_category = 1 if prob >= 0.5 else 0
+    targets = [BinaryClassifierOutputTarget(predicted_category)]
+    
+    # Tạo grayscale cam với target phù hợp
+    grayscale_cam = cam(input_tensor=input_tensor, targets=targets)
     grayscale_cam = grayscale_cam[0, :]  # Lấy batch đầu tiên
     
     # Chuẩn bị ảnh gốc (resize về 224x224 và normalize về [0,1])
