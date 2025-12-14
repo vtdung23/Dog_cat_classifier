@@ -330,105 +330,121 @@ def render_report_tab():
     # Chuẩn bị data
     epochs = list(range(1, len(resnet_data.get("train_loss", [])) + 1))
     
-    # Tạo figure với 2x2 subplots
-    fig, axes = plt.subplots(2, 2, figsize=(14, 10))
-    fig.suptitle("Training History Comparison", fontsize=16, fontweight='bold')
-    
     # Colors
     resnet_color = '#FF6B6B'
     convmixer_color = '#4ECDC4'
     train_style = '-'
     valid_style = '--'
     
+    # Helper function to create download buttons for a chart
+    def add_download_buttons(fig, chart_name, key_suffix):
+        col_dl1, col_dl2, _ = st.columns([1, 1, 4])
+        
+        # Save to PDF
+        pdf_buffer = io.BytesIO()
+        fig.savefig(pdf_buffer, format='pdf', bbox_inches='tight', dpi=300)
+        pdf_buffer.seek(0)
+        
+        # Save to SVG
+        svg_buffer = io.BytesIO()
+        fig.savefig(svg_buffer, format='svg', bbox_inches='tight')
+        svg_buffer.seek(0)
+        
+        with col_dl1:
+            st.download_button(
+                label="📥 Tải PDF",
+                data=pdf_buffer,
+                file_name=f"{chart_name}.pdf",
+                mime="application/pdf",
+                key=f"download_{key_suffix}_pdf"
+            )
+        
+        with col_dl2:
+            st.download_button(
+                label="📥 Tải SVG",
+                data=svg_buffer,
+                file_name=f"{chart_name}.svg",
+                mime="image/svg+xml",
+                key=f"download_{key_suffix}_svg"
+            )
+        
+        plt.close(fig)
+    
+    # Layout 2 cột cho các biểu đồ
+    col_chart1, col_chart2 = st.columns(2)
+    
     # 1. Training Loss
-    ax1 = axes[0, 0]
-    ax1.plot(epochs, resnet_data.get("train_loss", []), train_style, 
-             color=resnet_color, label='ResNet34 - Train', linewidth=2)
-    ax1.plot(epochs, convmixer_data.get("train_loss", []), train_style, 
-             color=convmixer_color, label='ConvMixer - Train', linewidth=2)
-    ax1.set_title("Training Loss", fontsize=12, fontweight='bold')
-    ax1.set_xlabel("Epoch")
-    ax1.set_ylabel("Loss")
-    ax1.legend()
-    ax1.grid(True, alpha=0.3)
+    with col_chart1:
+        fig1, ax1 = plt.subplots(figsize=(7, 5))
+        ax1.plot(epochs, resnet_data.get("train_loss", []), train_style, 
+                 color=resnet_color, label='ResNet34', linewidth=2)
+        ax1.plot(epochs, convmixer_data.get("train_loss", []), train_style, 
+                 color=convmixer_color, label='ConvMixer', linewidth=2)
+        ax1.set_title("Training Loss", fontsize=12, fontweight='bold')
+        ax1.set_xlabel("Epoch")
+        ax1.set_ylabel("Loss")
+        ax1.legend()
+        ax1.grid(True, alpha=0.3)
+        plt.tight_layout()
+        st.pyplot(fig1)
+        add_download_buttons(fig1, "training_loss", "train_loss")
     
     # 2. Validation Loss
-    ax2 = axes[0, 1]
-    ax2.plot(epochs, resnet_data.get("valid_loss", []), valid_style, 
-             color=resnet_color, label='ResNet34 - Valid', linewidth=2, marker='o')
-    ax2.plot(epochs, convmixer_data.get("valid_loss", []), valid_style, 
-             color=convmixer_color, label='ConvMixer - Valid', linewidth=2, marker='s')
-    ax2.set_title("Validation Loss", fontsize=12, fontweight='bold')
-    ax2.set_xlabel("Epoch")
-    ax2.set_ylabel("Loss")
-    ax2.legend()
-    ax2.grid(True, alpha=0.3)
+    with col_chart2:
+        fig2, ax2 = plt.subplots(figsize=(7, 5))
+        ax2.plot(epochs, resnet_data.get("valid_loss", []), valid_style, 
+                 color=resnet_color, label='ResNet34', linewidth=2, marker='o')
+        ax2.plot(epochs, convmixer_data.get("valid_loss", []), valid_style, 
+                 color=convmixer_color, label='ConvMixer', linewidth=2, marker='s')
+        ax2.set_title("Validation Loss", fontsize=12, fontweight='bold')
+        ax2.set_xlabel("Epoch")
+        ax2.set_ylabel("Loss")
+        ax2.legend()
+        ax2.grid(True, alpha=0.3)
+        plt.tight_layout()
+        st.pyplot(fig2)
+        add_download_buttons(fig2, "validation_loss", "valid_loss")
+    
+    # Layout 2 cột tiếp theo
+    col_chart3, col_chart4 = st.columns(2)
     
     # 3. Training Accuracy
-    ax3 = axes[1, 0]
-    train_acc_resnet = [x * 100 for x in resnet_data.get("train_metric", [])]
-    train_acc_convmixer = [x * 100 for x in convmixer_data.get("train_metric", [])]
-    ax3.plot(epochs, train_acc_resnet, train_style, 
-             color=resnet_color, label='ResNet34 - Train', linewidth=2)
-    ax3.plot(epochs, train_acc_convmixer, train_style, 
-             color=convmixer_color, label='ConvMixer - Train', linewidth=2)
-    ax3.set_title("Training Accuracy", fontsize=12, fontweight='bold')
-    ax3.set_xlabel("Epoch")
-    ax3.set_ylabel("Accuracy (%)")
-    ax3.legend()
-    ax3.grid(True, alpha=0.3)
-    ax3.set_ylim([70, 100])
+    with col_chart3:
+        fig3, ax3 = plt.subplots(figsize=(7, 5))
+        train_acc_resnet = [x * 100 for x in resnet_data.get("train_metric", [])]
+        train_acc_convmixer = [x * 100 for x in convmixer_data.get("train_metric", [])]
+        ax3.plot(epochs, train_acc_resnet, train_style, 
+                 color=resnet_color, label='ResNet34', linewidth=2)
+        ax3.plot(epochs, train_acc_convmixer, train_style, 
+                 color=convmixer_color, label='ConvMixer', linewidth=2)
+        ax3.set_title("Training Accuracy", fontsize=12, fontweight='bold')
+        ax3.set_xlabel("Epoch")
+        ax3.set_ylabel("Accuracy (%)")
+        ax3.legend()
+        ax3.grid(True, alpha=0.3)
+        ax3.set_ylim([70, 100])
+        plt.tight_layout()
+        st.pyplot(fig3)
+        add_download_buttons(fig3, "training_accuracy", "train_acc")
     
     # 4. Validation Accuracy
-    ax4 = axes[1, 1]
-    valid_acc_resnet = [x * 100 for x in resnet_data.get("valid_metric", [])]
-    valid_acc_convmixer = [x * 100 for x in convmixer_data.get("valid_metric", [])]
-    ax4.plot(epochs, valid_acc_resnet, valid_style, 
-             color=resnet_color, label='ResNet34 - Valid', linewidth=2, marker='o')
-    ax4.plot(epochs, valid_acc_convmixer, valid_style, 
-             color=convmixer_color, label='ConvMixer - Valid', linewidth=2, marker='s')
-    ax4.set_title("Validation Accuracy", fontsize=12, fontweight='bold')
-    ax4.set_xlabel("Epoch")
-    ax4.set_ylabel("Accuracy (%)")
-    ax4.legend()
-    ax4.grid(True, alpha=0.3)
-    ax4.set_ylim([90, 100])
-    
-    plt.tight_layout()
-    st.pyplot(fig)
-    
-    # Download buttons for the main chart
-    col_dl1, col_dl2, _ = st.columns([1, 1, 4])
-    
-    # Save to PDF
-    pdf_buffer = io.BytesIO()
-    fig.savefig(pdf_buffer, format='pdf', bbox_inches='tight', dpi=300)
-    pdf_buffer.seek(0)
-    
-    # Save to SVG
-    svg_buffer = io.BytesIO()
-    fig.savefig(svg_buffer, format='svg', bbox_inches='tight')
-    svg_buffer.seek(0)
-    
-    with col_dl1:
-        st.download_button(
-            label="📥 Tải PDF",
-            data=pdf_buffer,
-            file_name="training_history_comparison.pdf",
-            mime="application/pdf",
-            key="download_main_chart_pdf"
-        )
-    
-    with col_dl2:
-        st.download_button(
-            label="📥 Tải SVG",
-            data=svg_buffer,
-            file_name="training_history_comparison.svg",
-            mime="image/svg+xml",
-            key="download_main_chart_svg"
-        )
-    
-    plt.close(fig)
+    with col_chart4:
+        fig4, ax4 = plt.subplots(figsize=(7, 5))
+        valid_acc_resnet = [x * 100 for x in resnet_data.get("valid_metric", [])]
+        valid_acc_convmixer = [x * 100 for x in convmixer_data.get("valid_metric", [])]
+        ax4.plot(epochs, valid_acc_resnet, valid_style, 
+                 color=resnet_color, label='ResNet34', linewidth=2, marker='o')
+        ax4.plot(epochs, valid_acc_convmixer, valid_style, 
+                 color=convmixer_color, label='ConvMixer', linewidth=2, marker='s')
+        ax4.set_title("Validation Accuracy", fontsize=12, fontweight='bold')
+        ax4.set_xlabel("Epoch")
+        ax4.set_ylabel("Accuracy (%)")
+        ax4.legend()
+        ax4.grid(True, alpha=0.3)
+        ax4.set_ylim([90, 100])
+        plt.tight_layout()
+        st.pyplot(fig4)
+        add_download_buttons(fig4, "validation_accuracy", "valid_acc")
     
     st.markdown("---")
     
