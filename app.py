@@ -338,8 +338,6 @@ def render_report_tab():
     
     # Helper function to create download buttons for a chart
     def add_download_buttons(fig, chart_name, key_suffix):
-        col_dl1, col_dl2, _ = st.columns([1, 1, 4])
-        
         # Save to PDF
         pdf_buffer = io.BytesIO()
         fig.savefig(pdf_buffer, format='pdf', bbox_inches='tight', dpi=300)
@@ -350,22 +348,25 @@ def render_report_tab():
         fig.savefig(svg_buffer, format='svg', bbox_inches='tight')
         svg_buffer.seek(0)
         
-        with col_dl1:
+        # 2 nút nằm ngang cạnh nhau
+        btn_col1, btn_col2 = st.columns(2)
+        with btn_col1:
             st.download_button(
-                label="📥 Tải PDF",
+                label="📥 PDF",
                 data=pdf_buffer,
                 file_name=f"{chart_name}.pdf",
                 mime="application/pdf",
-                key=f"download_{key_suffix}_pdf"
+                key=f"download_{key_suffix}_pdf",
+                use_container_width=True
             )
-        
-        with col_dl2:
+        with btn_col2:
             st.download_button(
-                label="📥 Tải SVG",
+                label="📥 SVG",
                 data=svg_buffer,
                 file_name=f"{chart_name}.svg",
                 mime="image/svg+xml",
-                key=f"download_{key_suffix}_svg"
+                key=f"download_{key_suffix}_svg",
+                use_container_width=True
             )
         
         plt.close(fig)
