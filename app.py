@@ -268,13 +268,13 @@ def render_report_tab():
     
     # Load results
     try:
-        with open("result.json", "r") as f:
+        with open("results.json", "r") as f:
             results = json.load(f)
     except FileNotFoundError:
-        st.error("❌ Không tìm thấy file `result.json`!")
+        st.error("❌ Không tìm thấy file `results.json`!")
         return
     except json.JSONDecodeError:
-        st.error("❌ File `result.json` không đúng định dạng!")
+        st.error("❌ File `results.json` không đúng định dạng!")
         return
     
     # Lấy data
