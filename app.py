@@ -192,7 +192,7 @@ def render_demo_tab():
         
         with col1:
             st.markdown("#### 🖼️ Ảnh gốc")
-            st.image(image, use_container_width=True)
+            st.image(image, use_column_width=True)
         
         with col2:
             st.markdown("#### 🔥 Grad-CAM Heatmap")
@@ -356,8 +356,7 @@ def render_report_tab():
                 data=pdf_buffer,
                 file_name=f"{chart_name}.pdf",
                 mime="application/pdf",
-                key=f"download_{key_suffix}_pdf",
-                use_container_width=True
+                key=f"download_{key_suffix}_pdf"
             )
         with btn_col2:
             st.download_button(
@@ -365,8 +364,7 @@ def render_report_tab():
                 data=svg_buffer,
                 file_name=f"{chart_name}.svg",
                 mime="image/svg+xml",
-                key=f"download_{key_suffix}_svg",
-                use_container_width=True
+                key=f"download_{key_suffix}_svg"
             )
         
         plt.close(fig)
@@ -463,7 +461,7 @@ def render_report_tab():
             "Train Acc (%)": [f"{x*100:.2f}" for x in resnet_data.get("train_metric", [])],
             "Valid Acc (%)": [f"{x*100:.2f}" for x in resnet_data.get("valid_metric", [])]
         })
-        st.dataframe(df_resnet, use_container_width=True, hide_index=True)
+        st.dataframe(df_resnet, use_container_width=True)
     
     with tab_convmixer:
         import pandas as pd
@@ -474,7 +472,7 @@ def render_report_tab():
             "Train Acc (%)": [f"{x*100:.2f}" for x in convmixer_data.get("train_metric", [])],
             "Valid Acc (%)": [f"{x*100:.2f}" for x in convmixer_data.get("valid_metric", [])]
         })
-        st.dataframe(df_convmixer, use_container_width=True, hide_index=True)
+        st.dataframe(df_convmixer, use_container_width=True)
     
     # ===== KẾT LUẬN =====
     st.markdown("---")
