@@ -24,5 +24,43 @@ license: mit
 - **Paper:** "Patches Are All You Need?"
 - **Dataset:** Dogs vs Cats
 
-## 🚀 Sử dụng
+## � Chạy Local
+
+### Yêu cầu
+- Python 3.8+
+- pip
+
+### Cài đặt
+
+1. **Clone repository:**
+```bash
+git clone <repository-url>
+cd dog-cat-classifier
+```
+
+2. **Tạo môi trường ảo (khuyến nghị):**
+```bash
+# Windows
+python -m venv venv
+venv\Scripts\activate
+
+# Linux/MacOS
+python -m venv venv
+source venv/bin/activate
+```
+
+3. **Cài đặt dependencies:**
+```bash
+pip install -r requirements.txt
+```
+
+### Chạy ứng dụng
+
+```bash
+streamlit run app.py
+```
+
+Ứng dụng sẽ tự động mở trong trình duyệt tại địa chỉ: `http://localhost:8501`
+
+## �🚀 Sử dụng
 Upload một ảnh chó hoặc mèo để xem kết quả phân loại!
