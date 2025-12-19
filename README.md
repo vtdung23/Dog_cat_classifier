@@ -65,3 +65,5 @@ streamlit run app.py
 ## �🚀 Sử dụng
 Upload một ảnh chó hoặc mèo để xem kết quả phân loại!
 ---
+
+## Loading model from HF: https://huggingface.co/vtdung23/dog-cat-model/tree/main
